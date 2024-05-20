@@ -1,21 +1,29 @@
-成功打开标签集 ...
-幻数（文件格式）:2049  ;标签总数:60000
-开始读取Label数据......
-读取Label数据完毕......
-成功打开图像集 ...
-幻数（文件格式）:2051 图像总数:60000 每个图像的行数:28 每个图像的列数:28
-开始读取Image数据......
-读取Image数据完毕......
-成功打开标签集 ...
-幻数（文件格式）:2049  ;标签总数:10000
-开始读取Label数据......
-读取Label数据完毕......
-成功打开图像集 ...
-幻数（文件格式）:2051 图像总数:10000 每个图像的行数:28 每个图像的列数:28
-开始读取Image数据......
-读取Image数据完毕......
-开始进行训练...
-训练完成
-开始进行预测...
-预测完成
-测试数据集上的准确率为：96.72%
+#include<iostream>
+#include<opencv.hpp>
+using namespace std;
+using namespace cv;
+
+int main()
+{
+	//读取一张手写数字图片(28,28)
+	Mat image = cv::imread("shuzi1.jpg", 0);
+	Mat img_show = image.clone();
+	//更换数据类型有uchar->float32
+	image.convertTo(image, CV_32F);
+	//归一化
+	image = image / 255.0;
+	//(1,784)
+	image = image.reshape(1, 1);
+	
+	//加载svm模型
+	cv::Ptr<cv::ml::SVM> svm = cv::ml::StatModel::load<cv::ml::SVM>("mnist_svm.xml");
+	//预测图片
+	float ret = svm->predict(image);
+	cout << ret << endl;
+
+	cv::imshow("img", img_show);
+	cv::waitKey(0);
+	getchar();
+	return 0;
+}
+
